@@ -1,12 +1,6 @@
 """
 @author: Milena Bajic (DTU Compute)
 
-encoder-decoder model for SAME series:
-https://github.com/lkulowski/LSTM_encoder_decoder/blob/master/code/lstm_encoder_decoder.py
-https://github.com/pytorch/tutorials/blob/master/intermediate_source/seq2seq_translation_tutorial.py
-attn:
-https://buomsoo-kim.github.io/attention/2020/04/27/Attention-mechanism-21.md/
-
 """
 import sys
 import torch
@@ -184,25 +178,17 @@ class lstm_seq2seq(nn.Module):
         if self.use_teacher_forcing:
             # Teacher forcing: Feed the target as the next input
             for t in range(self.target_len):
-                #print('Seq2Seq forward - decoder input: ',decoder_input.shape)
-                #print('Seq2Seq forward - decoder hidden input: ',decoder_hidden[0].shape)
                 decoder_input.to(self.device)
                 decoder_output, decoder_hidden = self.decoder(decoder_input, decoder_hidden)
                 outputs[t] = decoder_output
                 decoder_input = target_batch[t,:,:].unsqueeze(0) # current target will be the input in the next timestep
-                #print('Seq2Seq forward after - decoder input: ',decoder_input.shape)
-                #print('Seq2Seq forward after - decoder hidden input: ',decoder_hidden[0].shape)
 
         else:
             # Without teacher forcing: use its own predictions as the next input
             for t in range(self.target_len):
-                #print('Seq2Seq forward - decoder input: ',decoder_input.shape)
-                #print('Seq2Seq forward - decoder hidden input: ',decoder_hidden[0].shape)
                 decoder_output, decoder_hidden = self.decoder(decoder_input, decoder_hidden)
                 outputs[t] = decoder_output
                 decoder_input = decoder_output.unsqueeze(0)
-                #print('Seq2Seq forward after - decoder input: ',decoder_input.shape)
-                #print('Seq2Seq forward after - decoder hidden input: ',decoder_hidden[0].shape)
 
         return outputs
 
