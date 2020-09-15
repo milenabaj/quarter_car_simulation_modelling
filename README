@@ -42,4 +42,4 @@ Required input:
     Input directory with data prepared in windows
     
 Output:
-    Trained model in .pth and .onnx form, predictions of road profiles from accelerations
+    Trained model in .pth and .onnx form, predictions of road profiles from vertical car accelerations
