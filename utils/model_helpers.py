@@ -12,8 +12,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.ticker import MaxNLocator
-from quarter_car_model_machine_learning.utils.various_utils import *
-from quarter_car_model_machine_learning.machine_learning_modules import encoder_decoder
+from quarter_car_simulation_modelling.utils.various_utils import *
+from quarter_car_simulation_modelling.machine_learning_modules import encoder_decoder
 import torch
 
 # Device

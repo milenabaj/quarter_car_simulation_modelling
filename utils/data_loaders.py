@@ -1,7 +1,7 @@
 """
 PyTorch Data loading utils.
 
-@author: Milena Bajic (DTU Compute)
+@author: Milena Bajic 
 """
 
 import sys,os, glob, time
@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import torch
 from torch.utils.data import Dataset, DataLoader, ConcatDataset
    
-from quarter_car_model_machine_learning.utils.various_utils import *
+from quarter_car_simulation_modelling.utils.various_utils import *
 
 # Get logger for module
 dlog = get_mogule_logger("data_loaders")

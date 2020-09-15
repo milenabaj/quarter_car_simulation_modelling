@@ -10,7 +10,7 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler
 from torch.optim import lr_scheduler
 from torch.optim.lr_scheduler import StepLR
-from quarter_car_model_machine_learning.utils.various_utils import *
+from quarter_car_simulation_modelling.utils.various_utils import *
 
 # Get logger for module
 ed_log = get_mogule_logger("encoder_decoder")

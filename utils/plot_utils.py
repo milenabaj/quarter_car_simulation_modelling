@@ -9,7 +9,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
-from quarter_car_model_machine_learning.utils.various_utils import *
+from quarter_car_simulation_modelling.utils.various_utils import *
 import torch
 
 # Get logger for module

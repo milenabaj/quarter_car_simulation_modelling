@@ -1,7 +1,7 @@
 """
 Main script.
 
-@author: Milena Bajic (DTU Compute)
+@author: Milena Bajic 
 """
 
 import sys,os, glob, time
