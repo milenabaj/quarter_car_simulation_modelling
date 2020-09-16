@@ -277,10 +277,4 @@ elif (not do_train_with_early_stopping and do_test):
     plotter.plot_pred_vs_true_timeseries(test_true, test_pred, test_speeds, test_orig_lengths, 'test')
 
 
-# => TODO: Get original ts length -> unpad it to that and simulate random points up to 2m, and plot pred/true on that
-    
-# => TODO: Pass best model prediction to plotter and plot predicted and true time series
-
-# => TODO: define predict to load the trained model and predict on test data
-    # prepare predict method to scale the data using the train scaler
 
