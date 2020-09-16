@@ -238,15 +238,8 @@ if __name__ == "__main__":
 # Onnx input
 onnx_input = (features, features) #saved is without teacher forcing, output is not needed for prediction only the shape is needed for model structure
 
-# Last Model
-log.debug('\n')
-log.debug('Last model: {0}'.format(model.state_dict()['encoder.lstm.weight_ih_l0'].reshape(-1)[0:30]))
-log.debug('Last epoch: {0}\n'.format(epoch_index))
-    
 # Best Model (saved as .pth and .onnx)
 best_model_info = model_helpers.ModelInfo(model, early_stopping = early_stopping, model_name = model_name, onnx_input = onnx_input, out_dir = out_dir)
-log.debug('Best model: {0}'.format(best_model_info.model.state_dict()['encoder.lstm.weight_ih_l0'].reshape(-1)[0:30]))
-log.debug('Best epoch: {0}\n'.format(best_model_info.epoch))
 
 # Best Model Predictions
 if do_train:
