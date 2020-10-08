@@ -34,4 +34,12 @@ Output is the data directory with the following subdirectories:
 ==============================================
 MODELLING
 =============================================
+Run:
+python __main__py.py 
+with correct input and output directories as arguments. 
+
+It is ossible to choose between the following models: encoder_decoder, encoder_decoder with attention (dot or general). 
+Default model: encoder_decoder with general attention.
+
+Possible are selections on defect widths and depts to use.
 
