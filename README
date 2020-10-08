@@ -1,5 +1,5 @@
 """
-@author: Milena Bajic 
+@author: Milena Bajic (DTU Compute)
 """
 ==================
 PACKAGE STRUCTURE
@@ -31,15 +31,7 @@ Output is the data directory with the following subdirectories:
   - train-val-test-normalized-split-into-windows: A sliding window of size = 2m and a step of 1 point is applied on train/valid/test files from train-val-test-normalized.
   - scaler.pkl: train scaler file.
 
-=============================================
+==============================================
 MODELLING
 =============================================
-Run:
-    python __main__.py
-    The script uses encoder-decoder model with LSTM networks to predict severity (road profile) sequences from sequences of vertical car acceleration.
 
-Required input:
-    Input directory with data prepared in windows
-    
-Output:
-    Trained model in .pth and .onnx form, predictions of road profiles from vertical car accelerations

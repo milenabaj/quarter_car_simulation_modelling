@@ -1,7 +1,10 @@
 """
+Encoder-decoder model without attention.
+
 @author: Milena Bajic (DTU Compute)
 
 """
+
 import sys
 import torch
 from torch.autograd import Variable
@@ -10,7 +13,7 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler
 from torch.optim import lr_scheduler
 from torch.optim.lr_scheduler import StepLR
-from quarter_car_simulation_modelling.utils.various_utils import *
+from quarter_car_model_machine_learning.utils.various_utils import *
 
 # Get logger for module
 ed_log = get_mogule_logger("encoder_decoder")
@@ -49,8 +52,6 @@ class lstm_encoder(nn.Module):
 
         self.lstm_out, self.hidden = self.lstm(x_input.view(x_input.shape[0], x_input.shape[1], self.input_size))
 
-        #print('Encoder forward - lstm_out: ',self.lstm_out.shape)
-        #print('Encoder forward - hidden: ',self.hidden[0].shape)
         return self.lstm_out, self.hidden
 
     def init_hidden(self, batch_size):
@@ -99,8 +100,6 @@ class lstm_decoder(nn.Module):
         :                                   element in the sequence
 
         '''
-        #x_input = x_input.unsqueeze(0) #(batch_size, input_features) -> (1, batch_size, input_features))
-        #print('Decoder forward - lstm input: ',x_input.shape)
         x_input.to(self.device)
         lstm_out, self.hidden = self.lstm(x_input, encoder_hidden_states)
         #print('Decoder forward - lstm_out: ',lstm_out.shape)
@@ -115,7 +114,7 @@ class lstm_decoder(nn.Module):
 class lstm_seq2seq(nn.Module):
     ''' train LSTM encoder-decoder and make predictions '''
 
-    def __init__(self, input_size  = 1, hidden_size = 64, target_len = 1000, 
+    def __init__(self, input_size  = 1, hidden_size = 92, target_len = 1000, 
                  use_teacher_forcing = True, device = 'cuda'):
 
         '''
@@ -138,7 +137,7 @@ class lstm_seq2seq(nn.Module):
                                     device = self.device)
 
 
-    def forward(self, input_batch, target_batch):
+    def forward(self, input_batch, target_batch = None):
 
         '''
         : param input_batch:                    should be 2D (batch_size, input_size)
@@ -148,49 +147,44 @@ class lstm_seq2seq(nn.Module):
         :                                   element in the sequence
 
         '''
-
+        if target_batch is None:
+            self.use_teacher_forcing = False # can't use teacher forcing if the output sequence is not given
+            
         batch_size = input_batch.shape[1]
 
         # ======== ENCODER ======== #
         # Initialize hidden state
-        encoder_hidden = self.encoder.init_hidden(batch_size)
+        self.encoder.init_hidden(batch_size)
 
-        # Encoder outputs
-        encoder_output, encoder_hidden = self.encoder(input_batch)
-        self.encoder_output = encoder_output
-        self.encoder_hidden = encoder_hidden
-        
+        # Pass trough the encoder
+        self.encoder_output, self.encoder_hidden = self.encoder(input_batch)
 
-        # ====== DDECODER ======= #
-        # First decoder input: '0' (1, batch_size, 1)
-        # First decoder hidden state: last encoder hidden state (batch_size, input_size)
-        decoder_input = torch.zeros([1, batch_size, 1]).to(self.device)
-        decoder_hidden = encoder_hidden
+
+        # ====== DECODER ======= #
+        self.decoder_input = torch.zeros([1, batch_size, 1]).to(self.device) # start of the output seq.
+        self.decoder_hidden = self.encoder_hidden
 
         # To cuda
-        decoder_hidden[0].to(self.device)
-        decoder_hidden[1].to(self.device)
+        self.decoder_hidden[0].to(self.device)
+        self.decoder_hidden[1].to(self.device)
 
-        # Outputs tensor
-        outputs = torch.zeros([self.target_len,  batch_size, 1]).to(self.device)
+        # Initialize vector to store the decoder output
+        self.outputs = torch.zeros([self.target_len,  batch_size, 1]).to(self.device)
 
         # Decoder output
         if self.use_teacher_forcing:
             # Teacher forcing: Feed the target as the next input
             for t in range(self.target_len):
-                decoder_input.to(self.device)
-                decoder_output, decoder_hidden = self.decoder(decoder_input, decoder_hidden)
-                outputs[t] = decoder_output
-                decoder_input = target_batch[t,:,:].unsqueeze(0) # current target will be the input in the next timestep
+                self.decoder_output, self.decoder_hidden = self.decoder(self.decoder_input, self.decoder_hidden)
+                self.outputs[t] = self.decoder_output
+                self.decoder_input = target_batch[t,:,:].unsqueeze(0).to(self.device) # current target will be the input in the next timestep
 
         else:
             # Without teacher forcing: use its own predictions as the next input
             for t in range(self.target_len):
+                self.decoder_output, self.decoder_hidden = self.decoder(self.decoder_input, self.decoder_hidden)
+                self.outputs[t] = self.decoder_output
+                self.decoder_input = self.decoder_output.unsqueeze(0).to(self.device)
 
-                decoder_output, decoder_hidden = self.decoder(decoder_input, decoder_hidden)
-                outputs[t] = decoder_output
-                decoder_input = decoder_output.unsqueeze(0)
-
-        return outputs
-
+        return self.outputs
 
