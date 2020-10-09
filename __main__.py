@@ -28,9 +28,6 @@ from utils import various_utils, plot_utils, model_helpers
 
 # Device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-sys.path.append(os.getcwd()) 
-sys.path.append(os.getenv("HOME"))
-sys.path.append('/home/mibaj/') 
    
 #logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
 if __name__ == "__main__":
