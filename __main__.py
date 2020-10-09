@@ -244,12 +244,7 @@ if __name__ == "__main__":
                     
                 elif model_type=='lstm_encdec_with_attn':       
                     out = model(acc, targets, teacher_forcing_ratio = teacher_forcing_ratio)
-                    
-                elif model_type=='lstm_encdec_with_speed':
-                    scaled_speed = scaled_speed.reshape(acc.shape[1],1).to(device)
-                    out = model(acc, scaled_speed, targets)
-                   
-              
+                                 
                 # Compute loss
                 train_loss = criterion(out, targets)
                 train_batch_results.loss_total += train_loss.item()
